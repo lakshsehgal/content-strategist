@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuroid — Content Strategist Application</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface-2: #1a1a1a;
+    --border: #222222;
+    --border-focus: #e8ff47;
+    --accent: #e8ff47;
+    --accent-dim: #e8ff4720;
+    --text: #f0f0f0;
+    --text-secondary: #888888;
+    --text-muted: #555555;
+    --error: #ff4757;
+    --success: #2ed573;
+    --radius: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Top bar */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .topbar-logo .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+
+  .topbar-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 140px 32px 40px;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  .hero h1 span {
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 540px;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+
+  .meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .meta-chip strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Role content sections */
+  .role-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 32px 40px;
+  }
+
+  .role-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 20px;
+  }
+
+  .role-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .role-section h2 span {
+    color: var(--accent);
+  }
+
+  .role-section p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .role-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .role-section li {
+    position: relative;
+    padding-left: 26px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .role-section li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 12px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .role-section li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Form Container */
+  .form-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px 100px;
+  }
+
+  /* Section */
+  .form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--accent);
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+  }
+
+  /* Field */
+  .field {
+    margin-bottom: 24px;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .field label .required {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+
+  .field .hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  /* Inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  select option {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+  }
+
+  /* Radio / Checkbox Group */
+  .radio-group, .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .radio-option:hover, .checkbox-option:hover {
+    border-color: var(--text-muted);
+  }
+
+  .radio-option input, .checkbox-option input {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .radio-option.selected, .checkbox-option.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .radio-option span, .checkbox-option span {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Two column */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+
+  /* Submit */
+  .submit-section {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .submit-btn {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 14px;
+    padding: 18px 64px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--accent-dim);
+  }
+
+  .submit-btn:active {
+    transform: translateY(0);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .submit-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 16px 28px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(10px);
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast.success {
+    background: #2ed57320;
+    border: 1px solid var(--success);
+    color: var(--success);
+  }
+
+  .toast.error {
+    background: #ff475720;
+    border: 1px solid var(--error);
+    color: var(--error);
+  }
+
+  /* Spinner */
+  .spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--bg);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Success state */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.95);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px;
+    text-align: center;
+  }
+
+  .success-overlay.show {
+    display: flex;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: var(--accent);
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-overlay h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -1px;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  .success-overlay p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    max-width: 460px;
+    line-height: 1.6;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Error state */
+  .field.has-error input,
+  .field.has-error textarea,
+  .field.has-error select {
+    border-color: var(--error);
+  }
+
+  .field-error {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 4px;
+    display: none;
+  }
+
+  .field.has-error .field-error {
+    display: block;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 120px 20px 30px; }
+    .role-container { padding: 10px 20px 30px; }
+    .role-section { padding: 24px; }
+    .form-container { padding: 0 20px 80px; }
+    .form-section { padding: 24px; }
+    .topbar { padding: 14px 20px; }
+    .hero h1 { letter-spacing: -1px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="dot"></div>
+    NEUROID
+  </div>
+  <div class="topbar-tag">Now Hiring</div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Content Strategist</div>
+  <h1>We're hiring someone who doesn't know how to make <span>boring content</span>.</h1>
+  <p>Neuroid is looking for a Content Strategist who lives and breathes content — the kind of person who watches a reel and instantly clocks the hook, the cut, and why it's working.</p>
+  <div class="hero-meta">
+    <div class="meta-chip">📍 <strong>New Delhi</strong> (Hybrid)</div>
+    <div class="meta-chip">💼 <strong>2–4 years</strong> experience</div>
+    <div class="meta-chip">⏱️ <strong>Full-time</strong></div>
+  </div>
+</div>
+
+<div class="role-container">
+  <div class="role-section">
+    <h2>The <span>Gist</span></h2>
+    <p>You'll own content strategy across multiple brands, pitch creative concepts, and bridge the gap between performance creatives and brand storytelling. We expect you to already be tracking trends, formats, and platform shifts — for fun.</p>
+  </div>
+
+  <div class="role-section">
+    <h2>About <span>Neuroid</span></h2>
+    <p>Neuroid is a growth studio for D2C operators catalyzing transformative partnerships. A full-funnel growth partner helping brands scale with performance marketing, ad commercials/brand campaigns, UGCs/performance creatives, CRO &amp; retention.</p>
+    <p>We've worked with brands like Lifelong, Woodenstreet, Kisah, Superbottoms, Yoho, Jewelsmars, Silverfied, NourishYou, DeepImpact, Truth&amp;Hair and more.</p>
+  </div>
+
+  <div class="role-section">
+    <h2>What you'll <span>do</span></h2>
+    <ul>
+      <li>Build content strategies for brands across industries — formats, hooks, narratives, distribution.</li>
+      <li>Conceptualize creatives for both performance marketing (CTR-driving, conversion-focused) and brand campaigns (narrative-led, top-of-funnel).</li>
+      <li>Pitch ideas and decks directly to clients — this is a client-facing role.</li>
+      <li>Work closely with creators, editors, and designers to bring ideas to life.</li>
+      <li>Stay on top of trends, formats, and platform shifts.</li>
+      <li>Translate brand briefs into content that actually performs.</li>
+    </ul>
+  </div>
+
+  <div class="role-section">
+    <h2>What we're <span>looking for</span></h2>
+    <ul>
+      <li>2–4 years at a content/marketing/creative agency, having worked across multiple brands.</li>
+      <li>Sharp understanding of creator economy, content formats, and platform-native storytelling.</li>
+      <li>Strong communication — written, verbal, and "explaining a wild idea to a skeptical client".</li>
+      <li>Solid grip on what makes performance creative different from brand creative.</li>
+      <li>Comfort with ambiguity and fast turnarounds.</li>
+    </ul>
+  </div>
+
+  <div class="role-section">
+    <h2>Bonus <span>points</span></h2>
+    <ul>
+      <li>That creative-ADHD brain where ideas don't stop showing up uninvited.</li>
+      <li>Have personally created or scripted content (not just briefed it).</li>
+      <li>Know your way around tools like Notion, Frame.io, or basic editing software.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="form-container">
+  <form id="application-form">
+    <!-- Section 1: Your Information -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div class="section-title">Your Information</div>
+      </div>
+
+      <div class="field">
+        <label>Full Name <span class="required">*</span></label>
+        <input type="text" name="full_name" placeholder="Jane Doe" required />
+        <div class="field-error">Please enter your full name</div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" name="email" placeholder="you@email.com" required />
+          <div class="field-error">Please enter a valid email address</div>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="required">*</span></label>
+          <input type="tel" name="phone" placeholder="+91 98xxxxxxxx" required />
+          <div class="field-error">Please enter a valid phone number</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Current City <span class="required">*</span></label>
+          <input type="text" name="city" placeholder="New Delhi" required />
+          <div class="field-error">Please enter your current city</div>
+        </div>
+        <div class="field">
+          <label>Open to WFO in Delhi? <span class="required">*</span></label>
+          <select name="wfo_delhi" required>
+            <option value="">Select</option>
+            <option value="already-in-delhi">Already in Delhi</option>
+            <option value="yes">Yes — willing to relocate</option>
+            <option value="no">No</option>
+          </select>
+          <div class="field-error">Please select an option</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>LinkedIn Profile <span class="required">*</span></label>
+        <input type="url" name="linkedin" placeholder="https://linkedin.com/in/yourhandle" required />
+        <div class="field-error">Please enter a valid LinkedIn URL</div>
+      </div>
+
+      <div class="field">
+        <label>Portfolio / Work Samples <span class="required">*</span></label>
+        <div class="hint">Drive folder, Notion page, Behance, personal site, decks — anything that shows your taste and craft.</div>
+        <input type="url" name="portfolio" placeholder="https://..." required />
+        <div class="field-error">Please share a link to your work</div>
+      </div>
+
+      <div class="field">
+        <label>Resume Link <span class="required">*</span></label>
+        <div class="hint">Public Google Drive / Dropbox / Notion link (make sure it's accessible).</div>
+        <input type="url" name="resume" placeholder="https://drive.google.com/..." required />
+        <div class="field-error">Please share a public resume link</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Your Experience -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div class="section-title">Your Experience</div>
+      </div>
+
+      <div class="field">
+        <label>Years of relevant experience <span class="required">*</span></label>
+        <select name="experience" required>
+          <option value="">Select</option>
+          <option value="<2">Less than 2 years</option>
+          <option value="2-3">2 – 3 years</option>
+          <option value="3-4">3 – 4 years</option>
+          <option value="4+">4+ years</option>
+        </select>
+        <div class="field-error">Please select your experience</div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Current / Most Recent Company <span class="required">*</span></label>
+          <input type="text" name="company" placeholder="Agency / Brand name" required />
+          <div class="field-error">Please enter your company</div>
+        </div>
+        <div class="field">
+          <label>Current Role <span class="required">*</span></label>
+          <input type="text" name="role_type" placeholder="Content Strategist, etc." required />
+          <div class="field-error">Please enter your role</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="field">
+          <label>Notice Period <span class="required">*</span></label>
+          <select name="notice_period" required>
+            <option value="">Select</option>
+            <option value="immediate">Immediate</option>
+            <option value="15-days">15 days</option>
+            <option value="30-days">30 days</option>
+            <option value="60-days">60 days</option>
+            <option value="90-days">90 days</option>
+          </select>
+          <div class="field-error">Please select your notice period</div>
+        </div>
+        <div class="field">
+          <label>Current CTC (₹ LPA)</label>
+          <input type="text" name="current_ctc" placeholder="e.g. 6 LPA" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Expected CTC (₹ LPA) <span class="required">*</span></label>
+        <input type="text" name="expected_ctc" placeholder="e.g. 8 LPA" required />
+        <div class="field-error">Please enter your expected CTC</div>
+      </div>
+
+      <div class="field">
+        <label>Brands / industries you've worked with (D2C experience) <span class="required">*</span></label>
+        <div class="hint">List the categories or specific brands. Be honest — quality over quantity.</div>
+        <textarea name="d2c_experience" placeholder="e.g. D2C beauty (Brand A, B), home & living (Brand C), fitness apps..." required></textarea>
+        <div class="field-error">Please share the brands/industries you've worked with</div>
+      </div>
+    </div>
+
+    <!-- Section 3: How You Think About Content -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div class="section-title">How You Think About Content</div>
+      </div>
+
+      <div class="field">
+        <label>Have you personally created or scripted content (not just briefed it)? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="created_content" value="yes-regularly" required />
+            <span>Yes — regularly. I script, shoot, edit, or all of the above.</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="created_content" value="yes-occasionally" required />
+            <span>Yes — occasionally, mostly scripts and concepts.</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="created_content" value="briefed-only" required />
+            <span>I've mostly briefed creators / editors, not made it myself.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Platforms you actively create / strategize for <span class="required">*</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="instagram" /><span>Instagram (Reels, Stories, Posts)</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="youtube" /><span>YouTube (Shorts &amp; Long-form)</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="tiktok" /><span>TikTok</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="linkedin" /><span>LinkedIn</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="twitter" /><span>X / Twitter</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="platforms" value="meta-ads" /><span>Meta Ads (performance creatives)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tools you're comfortable with</label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="notion" /><span>Notion</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="frameio" /><span>Frame.io</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="capcut" /><span>CapCut</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="premiere" /><span>Premiere Pro / Final Cut</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="figma" /><span>Figma / Canva</span></label>
+          <label class="checkbox-option"><input type="checkbox" name="tools" value="ai" /><span>AI tools (ChatGPT, Claude, Midjourney, etc.)</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>What makes you stand out? <span class="required">*</span></label>
+        <div class="hint">Performance creative vs. brand creative — what's the difference, and where do you shine? Two or three lines is plenty.</div>
+        <textarea name="standout" placeholder="The way you think about it..." required></textarea>
+        <div class="field-error">Please share your take</div>
+      </div>
+    </div>
+
+    <!-- Section 4: Show Us Your Brain -->
+    <div class="form-section">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div class="section-title">Show Us Your Brain</div>
+      </div>
+
+      <div class="field">
+        <label>A recent piece of content (ad, reel, campaign) you couldn't stop thinking about — and why <span class="required">*</span></label>
+        <textarea name="fav_content" placeholder="Drop a link or describe it. Tell us the hook, the cut, why it works..." required></textarea>
+        <div class="field-error">Please share an example</div>
+      </div>
+
+      <div class="field">
+        <label>Pitch us one wild content idea right now <span class="required">*</span></label>
+        <div class="hint">For any brand we've worked with, or one of your own. Hook + format + why it'll work. 4–8 lines.</div>
+        <textarea name="pitch" placeholder="Brand: …  Hook: …  Format: …  Why it'll perform: …" required></textarea>
+        <div class="field-error">Please share an idea</div>
+      </div>
+
+      <div class="field">
+        <label>Why Neuroid? <span class="required">*</span></label>
+        <textarea name="why_neuroid" placeholder="Honest answer. Skip the LinkedIn-speak." required></textarea>
+        <div class="field-error">Tell us why</div>
+      </div>
+
+      <div class="field">
+        <label>Anything else you want us to know?</label>
+        <textarea name="additional_info" placeholder="Optional. Side projects, hot takes, link to a thing you're proud of..."></textarea>
+      </div>
+
+      <div class="field">
+        <label class="checkbox-option">
+          <input type="checkbox" name="terms" required />
+          <span>I agree to be contacted regarding this application and understand my information will be used to evaluate fit.</span>
+        </label>
+        <div class="field-error">You must agree to proceed</div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-section">
+      <button type="submit" class="submit-btn">
+        <span class="btn-text">Submit Application</span>
+        <div class="spinner"></div>
+      </button>
+      <p class="submit-note">We read every application. If there's a fit, we'll reach out within 7 days.</p>
+    </div>
+  </form>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-icon">✓</div>
+  <h2>Application Submitted</h2>
+  <p>Thanks for applying to Neuroid. We'll review your work and get back to you if there's a fit. In the meantime — keep making un-boring things.</p>
+</div>
+
+<script>
+  // ===== Apps Script Web App URL =====
+  // Paste the deployed Web App URL from Apps Script here.
+  // See README.md for setup steps.
+  const APPS_SCRIPT_URL = 'REPLACE_WITH_YOUR_APPS_SCRIPT_WEB_APP_URL';
+
+  const form = document.getElementById('application-form');
+  const toast = document.getElementById('toast');
+  const successOverlay = document.getElementById('success-overlay');
+  const submitBtn = form.querySelector('.submit-btn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const spinner = submitBtn.querySelector('.spinner');
+
+  // Radio and checkbox visual state
+  document.querySelectorAll('.radio-option input, .checkbox-option input').forEach(input => {
+    input.addEventListener('change', function() {
+      if (input.type === 'radio') {
+        document.querySelectorAll(`input[name="${input.name}"]`).forEach(radio => {
+          radio.parentElement.classList.remove('selected');
+        });
+      }
+      this.parentElement.classList.toggle('selected', this.checked);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      showToast('Please fix the highlighted fields before submitting', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
+
+    try {
+      const formData = new FormData(form);
+      const payload = {
+        timestamp: new Date().toISOString(),
+        full_name: formData.get('full_name') || '',
+        email: formData.get('email') || '',
+        phone: formData.get('phone') || '',
+        city: formData.get('city') || '',
+        linkedin: formData.get('linkedin') || '',
+        role_type: formData.get('role_type') || '',
+        experience: formData.get('experience') || '',
+        company: formData.get('company') || '',
+        tools: formData.getAll('tools').join(', '),
+        platforms: formData.getAll('platforms').join(', '),
+        portfolio: formData.get('portfolio') || '',
+        resume: formData.get('resume') || '',
+        d2c_experience: formData.get('d2c_experience') || '',
+        created_content: formData.get('created_content') || '',
+        standout: formData.get('standout') || '',
+        fav_content: formData.get('fav_content') || '',
+        pitch: formData.get('pitch') || '',
+        why_neuroid: formData.get('why_neuroid') || '',
+        wfo_delhi: formData.get('wfo_delhi') || '',
+        current_ctc: formData.get('current_ctc') || '',
+        expected_ctc: formData.get('expected_ctc') || '',
+        notice_period: formData.get('notice_period') || '',
+        additional_info: formData.get('additional_info') || ''
+      };
+
+      // Send as URL-encoded body to avoid CORS preflight.
+      // Apps Script reads values from e.parameter.
+      const body = new URLSearchParams();
+      Object.entries(payload).forEach(([k, v]) => body.append(k, v));
+
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: body
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.status);
+      }
+
+      successOverlay.classList.add('show');
+      form.reset();
+      document.querySelectorAll('.radio-option, .checkbox-option').forEach(el => {
+        el.classList.remove('selected');
+      });
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      showToast('Something broke. Please try again or email us.', 'error');
+      submitBtn.disabled = false;
+      btnText.style.display = 'inline';
+      spinner.style.display = 'none';
+    }
+  });
+
+  function validateForm() {
+    let isValid = true;
+    const requiredFields = form.querySelectorAll('[required]');
+
+    requiredFields.forEach(field => {
+      if (!isFieldValid(field)) {
+        isValid = false;
+        const fieldContainer = field.closest('.field');
+        if (fieldContainer) fieldContainer.classList.add('has-error');
+      }
+    });
+
+    const termsCheckbox = form.querySelector('input[name="terms"]');
+    if (termsCheckbox && !termsCheckbox.checked) {
+      const fieldContainer = termsCheckbox.closest('.field');
+      if (fieldContainer) {
+        fieldContainer.classList.add('has-error');
+        isValid = false;
+      }
+    }
+
+    return isValid;
+  }
+
+  function isFieldValid(field) {
+    if (field.type === 'checkbox') return field.checked;
+    if (field.type === 'radio') {
+      return !!form.querySelector(`input[name="${field.name}"]:checked`);
+    }
+    if (field.type === 'email') {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value);
+    }
+    if (field.type === 'tel') {
+      return /^[\d\s\-\+\(\)]+$/.test(field.value) && field.value.replace(/\D/g, '').length >= 10;
+    }
+    if (field.type === 'url') {
+      return field.value === '' || /^https?:\/\//.test(field.value);
+    }
+    return field.value.trim() !== '';
+  }
+
+  form.querySelectorAll('input, textarea, select').forEach(field => {
+    const clearError = function() {
+      const fieldContainer = this.closest('.field');
+      if (fieldContainer && isFieldValid(this)) {
+        fieldContainer.classList.remove('has-error');
+      }
+    };
+    field.addEventListener('input', clearError);
+    field.addEventListener('change', clearError);
+  });
+
+  function showToast(message, type = 'success') {
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => toast.classList.remove('show'), 5000);
+  }
+</script>
+
+</body>
+</html>
