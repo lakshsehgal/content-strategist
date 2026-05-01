@@ -39,5 +39,21 @@ If you change the script, you must redeploy:
 The URL stays the same.
 
 ## Deploy the page
-- Drop `index.html` into any static host: GitHub Pages, Vercel, Netlify, Cloudflare Pages.
-- For GitHub Pages: push to `main`, Settings → Pages → Source: `main` / root.
+
+### Vercel (recommended)
+1. Push this repo to GitHub.
+2. In Vercel, click **Add New → Project** and import the repo.
+3. Framework Preset: **Other** (auto-detected — it's a plain static site).
+4. Leave **Build Command** and **Output Directory** empty.
+5. Click **Deploy**.
+
+Vercel serves `index.html` from the project root with zero configuration.
+Future pushes to the connected branch trigger automatic redeploys.
+
+> Make sure you've already pasted your deployed Apps Script Web App URL
+> into `index.html` (the `APPS_SCRIPT_URL` constant) **before** deploying,
+> otherwise form submissions will fail.
+
+### Other static hosts
+Drop `index.html` into any static host: GitHub Pages, Netlify, Cloudflare Pages.
+For GitHub Pages: push to `main`, Settings → Pages → Source: `main` / root.
